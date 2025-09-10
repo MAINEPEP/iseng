@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZenithID Store</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f3460 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid #8b5cf6;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .menu-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+            transform: scale(1.1);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .contact-cs {
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+
+        .contact-cs:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding: 2rem;
+            border-right: 2px solid #8b5cf6;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #8b5cf6;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(139, 92, 246, 0.2);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 1rem;
+        }
+
+        .sidebar-menu a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .sidebar-menu a:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateX(10px);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .product-card:hover {
+            border-color: #8b5cf6;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(45deg, #2d1b69, #8b5cf6);
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .product-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: #8b5cf6;
+        }
+
+        .product-price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #a855f7;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-stock {
+            color: #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .buy-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+        }
+
+        .buy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a0a2e, #16213e);
+            padding: 2rem;
+            border-radius: 15px;
+            border: 2px solid #8b5cf6;
+            max-width: 400px;
+            width: 90%;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #8b5cf6;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #8b5cf6;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #8b5cf6;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #a855f7;
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            border: none;
+            padding: 1rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1rem;
+            margin-top: 1rem;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .hero-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #8b5cf6, #a855f7);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            text-shadow: 0 0 30px rgba(139, 92, 246, 0.5);
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: #a1a1aa;
+            margin-bottom: 2rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-section">
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="logo">ZenithID</div>
+        </div>
+        <button class="contact-cs" onclick="contactCS()">Hubungi CS</button>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3 style="color: #8b5cf6;">Menu</h3>
+            <button class="close-btn" onclick="toggleSidebar()">×</button>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" onclick="showAdminLogin()">Admin</a></li>
+            <li><a href="#" onclick="contactCS()">Hubungi CS</a></li>
+            <li><a href="#">Tentang Kami</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+    <div class="container">
+        <div class="hero-section">
+            <h1 class="hero-title">ZenithID Store</h1>
+            <p class="hero-subtitle">Temukan produk gaming terbaik dengan kualitas premium</p>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Products will be loaded here -->
+        </div>
+    </div>
+
+    <!-- Purchase Modal -->
+    <div class="modal" id="purchaseModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closePurchaseModal()">×</button>
+            <h3 style="color: #8b5cf6; margin-bottom: 1rem;">Beli Produk</h3>
+            <div class="form-group">
+                <label>Nomor WhatsApp:</label>
+                <input type="text" id="whatsappNumber" placeholder="08xxxxxxxxxx">
+            </div>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="username" placeholder="Username Anda">
+            </div>
+            <button class="submit-btn" onclick="submitPurchase()">Beli Sekarang</button>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div class="modal" id="adminModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeAdminModal()">×</button>
+            <h3 style="color: #8b5cf6; margin-bottom: 1rem;">Login Admin</h3>
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" id="adminUsername" placeholder="Username">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="adminPassword" placeholder="Password">
+            </div>
+            <button class="submit-btn" onclick="submitAdminLogin()">Login</button>
+        </div>
+    </div>
+
+    <script>
+        // Sample products data
+        let products = [
+            {
+                id: 1,
+                name: 'Mobile Legends Diamond',
+                price: 'Rp 15,000',
+                stock: 50,
+                image: '🎮',
+                game: 'Mobile Legends'
+            },
+            {
+                id: 2,
+                name: 'Free Fire Diamond',
+                price: 'Rp 12,000',
+                stock: 75,
+                image: '💎',
+                game: 'Free Fire'
+            },
+            {
+                id: 3,
+                name: 'PUBG UC',
+                price: 'Rp 20,000',
+                stock: 30,
+                image: '🔫',
+                game: 'PUBG Mobile'
+            },
+            {
+                id: 4,
+                name: 'Valorant Points',
+                price: 'Rp 25,000',
+                stock: 40,
+                image: '⚡',
+                game: 'Valorant'
+            }
+        ];
+
+        let currentProduct = null;
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('overlay');
+            
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        function loadProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.innerHTML = `
+                    <div class="product-image">${product.image}</div>
+                    <div class="product-title">${product.name}</div>
+                    <div class="product-price">${product.price}</div>
+                    <div class="product-stock">Stock: ${product.stock}</div>
+                    <div style="color: #a1a1aa; margin-bottom: 1rem;">Game: ${product.game}</div>
+                    <button class="buy-btn" onclick="openPurchaseModal(${product.id})">Beli Sekarang</button>
+                `;
+                grid.appendChild(productCard);
+            });
+        }
+
+        function openPurchaseModal(productId) {
+            currentProduct = products.find(p => p.id === productId);
+            const modal = document.getElementById('purchaseModal');
+            modal.classList.add('active');
+        }
+
+        function closePurchaseModal() {
+            const modal = document.getElementById('purchaseModal');
+            modal.classList.remove('active');
+            document.getElementById('whatsappNumber').value = '';
+            document.getElementById('username').value = '';
+        }
+
+        function showAdminLogin() {
+            toggleSidebar();
+            const modal = document.getElementById('adminModal');
+            modal.classList.add('active');
+        }
+
+        function closeAdminModal() {
+            const modal = document.getElementById('adminModal');
+            modal.classList.remove('active');
+            document.getElementById('adminUsername').value = '';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function submitAdminLogin() {
+            const username = document.getElementById('adminUsername').value;
+            const password = document.getElementById('adminPassword').value;
+
+            if (username === 'zurzen' && password === 'admin') {
+                closeAdminModal();
+                window.open('admin.html', '_blank');
+            } else {
+                alert('Username atau password salah!');
+            }
+        }
+
+        function submitPurchase() {
+            const whatsapp = document.getElementById('whatsappNumber').value;
+            const username = document.getElementById('username').value;
+
+            if (!whatsapp || !username) {
+                alert('Mohon isi semua field!');
+                return;
+            }
+
+            // Simulate sending to Telegram bot
+            const orderData = {
+                product: currentProduct.name,
+                price: currentProduct.price,
+                whatsapp: whatsapp,
+                username: username,
+                date: new Date().toLocaleString('id-ID'),
+                token: generateToken()
+            };
+
+            // Here you would normally send to your Telegram bot
+            console.log('Order data:', orderData);
+            
+            alert(`Pesanan berhasil dikirim!\n\nProduk: ${orderData.product}\nHarga: ${orderData.price}\nWhatsApp: ${orderData.whatsapp}\nUsername: ${orderData.username}\nTanggal: ${orderData.date}\nToken: ${orderData.token}`);
+            
+            closePurchaseModal();
+        }
+
+        function generateToken() {
+            return Math.random().toString(36).substr(2, 9).toUpperCase();
+        }
+
+        function contactCS() {
+            alert('Menghubungi Customer Service...\nWhatsApp: +62 812-3456-7890');
+        }
+
+        // Load products on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadProducts();
+        });
+    </script>
+</body>
+          </html>
